@@ -1,5 +1,11 @@
 import { BASE_BURN } from "./data.js";
 
+export const PULSE_CAP = 12;
+
+export function nextPulse(current) {
+  return current >= PULSE_CAP ? current : current + 1;
+}
+
 let extra = 0;
 const listeners = new Set();
 
@@ -8,8 +14,13 @@ function emit() {
   listeners.forEach((fn) => fn(value, extra));
 }
 
-setInterval(() => {
-  extra += 1;
+const timer = setInterval(() => {
+  const next = nextPulse(extra);
+  if (next === extra) {
+    clearInterval(timer);
+    return;
+  }
+  extra = next;
   emit();
 }, 8000);
 

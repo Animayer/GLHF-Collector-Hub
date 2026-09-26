@@ -466,6 +466,7 @@ export const REWARDS = [
 
 export const STRONGHOLDS = {
   A: "archon",
+  B: "athena",
   C: "foxglove",
   D: "crusader",
   E: "chobo",
@@ -476,12 +477,12 @@ export const STRONGHOLDS = {
 };
 
 export const CONTESTED = {
-  1: { B: "crusader", G: "archon", H: "crusader", I: "foxglove", K: "crusader", M: "athena", N: "crusader", O: "crusader" },
-  2: { B: "athena", G: "athena", H: "chobo", I: "athena", K: "athena", M: "athena", N: "crusader", O: "athena" },
-  3: { B: "archon", G: "archon", H: "archon", I: "foxglove", K: "archon", M: "archon", N: "archon", O: "summoner" },
-  4: { B: "foxglove", G: "archon", H: "foxglove", I: "foxglove", K: "foxglove", M: "foxglove", N: "crusader", O: "foxglove" },
-  5: { B: "overseer", G: "overseer", H: "chobo", I: "overseer", K: "overseer", M: "athena", N: "overseer", O: "overseer" },
-  6: { B: "summoner", G: "archon", H: "summoner", I: "foxglove", K: "summoner", M: "summoner", N: "crusader", O: "summoner" },
+  1: { G: "archon", H: "crusader", I: "foxglove", K: "crusader", M: "athena", N: "crusader", O: "crusader" },
+  2: { G: "athena", H: "chobo", I: "athena", K: "athena", M: "athena", N: "crusader", O: "athena" },
+  3: { G: "archon", H: "archon", I: "foxglove", K: "archon", M: "archon", N: "archon", O: "summoner" },
+  4: { G: "archon", H: "foxglove", I: "foxglove", K: "foxglove", M: "foxglove", N: "crusader", O: "foxglove" },
+  5: { G: "overseer", H: "chobo", I: "overseer", K: "overseer", M: "athena", N: "overseer", O: "overseer" },
+  6: { G: "archon", H: "summoner", I: "foxglove", K: "summoner", M: "summoner", N: "crusader", O: "summoner" },
 };
 
 export const ZONES = {

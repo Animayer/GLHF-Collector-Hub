@@ -143,7 +143,7 @@ function warsHtml() {
     <section id="relic"><div id="relic-slot"></div></section>
     <section id="board">
       <h2>Faction Wars season board</h2>
-      <p class="rule">${esc(SCORE_RULE)}</p>
+      <p class="rule" id="score-rule">${esc(SCORE_RULE)}</p>
       <p class="swipe-hint fine">Swipe sideways for the point split.</p>
       <div id="board-slot"></div>
     </section>
@@ -169,7 +169,7 @@ function warsHtml() {
         <label class="fine">Map week <input class="week-slider" type="range" min="1" max="6" value="${week}" aria-label="Map week"></label>
       </div>
       <div id="zone-readout" class="zone-readout panel"></div>
-      <div class="legend">${FACTIONS.map((faction) => `<span><img src="${faction.icon}" alt="">${esc(faction.name)}</span>`).join("")}</div>
+      <div class="legend">${FACTIONS.map((faction) => `<span style="--faction:${faction.color}"><i class="swatch" aria-hidden="true"></i><img src="${faction.icon}" alt="">${esc(faction.name)}</span>`).join("")}</div>
     </section>
     <section id="council">
       <h2>Faction council</h2>
@@ -290,10 +290,12 @@ function rivalHtml() {
     return `<article class="rival-card" style="--faction:${faction.color}">
       <img class="head" src="${faction.head}" alt="">
       <h3>${esc(faction.name)}</h3>
-      <p>${fmt(row.total)} week pts</p>
-      <div class="bar"><span data-w="${scorePct}%" style="--faction:${faction.color}"></span></div>
+      <p class="bar-label">Week score</p>
+      <p class="fine">${fmt(row.total)} week pts</p>
+      <div class="bar" aria-label="Week score"><span data-w="${scorePct}%" style="--faction:${faction.color}"></span></div>
+      <p class="bar-label">Vote share</p>
       <button type="button" class="pixel-btn small" data-rival="${faction.id}" aria-pressed="${pressed}">${pressed ? "Voted" : "Demo vote"} ${votesNow}</button>
-      <div class="bar"><span data-w="${votePct}%" style="--faction:${faction.color}"></span></div>
+      <div class="bar" aria-label="Vote share"><span data-w="${votePct}%" style="--faction:${faction.color}"></span></div>
     </article>`;
   };
   return `<h2>Rivalry of the week</h2>
