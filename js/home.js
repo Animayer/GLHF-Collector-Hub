@@ -39,6 +39,6 @@ onBurn((value, extra) => {
     void burnEl.offsetWidth;
     burnEl.classList.add("tick");
   }
-  if (pulseEl) pulseEl.textContent = `+${fmt(extra)}`;
+  if (pulseEl) pulseEl.textContent = `+${fmt(extra)} sample burns this session`;
   if (supplyEl) supplyEl.textContent = fmt(ORIGINAL_SUPPLY - value);
 });
