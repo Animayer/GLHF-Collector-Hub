@@ -1,4 +1,4 @@
-# Build brief: GLHFers Collector Hub (clickable mockup)
+# Build brief: Gigaverse Collectors Hub (clickable mockup)
 
 **Repo:** Animayer/GLHF-Collector-Hub (branch off `main`, open a PR to `main`).
 **Deploy:** GitHub Pages is already enabled from `main` / root (legacy build, `.nojekyll` present). Live URL after merge: https://animayer.github.io/GLHF-Collector-Hub/ . Replace the placeholder `index.html`.
@@ -56,4 +56,4 @@ Dark game-lobby UI (deep purple/navy background, neon accents), chunky pixel bor
 - Holder card PNG downloads.
 - Territory map week slider and season-board week selector change the display.
 - "Mockup – sample data" banner and footer present on every page.
-- Update README with a short feature list + live URL. Open a PR to `main` titled "GLHFers Collector Hub mockup" and report: PR link, list of pages, known gaps.
+- Update README with a short feature list + live URL. Open a PR to `main` titled "Gigaverse Collectors Hub mockup" and report: PR link, list of pages, known gaps.

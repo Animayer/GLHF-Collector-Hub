@@ -1,4 +1,4 @@
-# GLHFers Collector Hub (Mockup)
+# Gigaverse Collectors Hub (Mockup)
 
 A **community-run** home base for GLHFers and Gigaverse ROM holders, presented as a clickable static **mockup**. It is built to feel like a pixel-art game lobby.
 
