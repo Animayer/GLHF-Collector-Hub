@@ -5,6 +5,7 @@ import {
   factionById,
   FACTIONS,
   FEED,
+  ITEMS,
   MAP_ROWS,
   MEDALS,
   questsFor,
@@ -25,6 +26,7 @@ import { esc, fmt, readStore, writeStore } from "./util.js";
 const app = document.getElementById("app");
 let week = 6;
 let builtFor = "";
+let hallTab = "overview";
 let playing = false;
 let playTimer = 0;
 let pinnedZone = "K";
@@ -187,20 +189,9 @@ function warsHtml() {
     </section>`;
 }
 
-function hallHtml(faction) {
+function hallOverview(faction) {
   const season = seasonTotals().find((row) => row.id === faction.id);
   return `
-    <p><a href="#halls">Back to Faction Wars</a></p>
-    <section class="hall-banner panel" style="--faction:${faction.color}">
-      <img class="hall-head" src="${faction.head}" alt="${esc(faction.name)} portrait">
-      <div>
-        <p class="kicker">${esc(faction.role)}</p>
-        <h2>${esc(faction.name)}</h2>
-        <p>${esc(faction.title)}</p>
-        <p>${esc(faction.onRecord)}</p>
-      </div>
-      <img class="hall-icon" src="${faction.icon}" alt="">
-    </section>
     <ul class="hall-stats">
       <li><b id="hall-rank">-</b><span>Week rank</span></li>
       <li><b id="hall-score">0</b><span>Week score</span></li>
@@ -229,6 +220,73 @@ function hallHtml(faction) {
       ${faction.council.map((badge) => `
         <div class="badge">${medalImg(badge.medal)}<span><b>${esc(badge.role)}</b> ${esc(badge.holder)}</span></div>`).join("")}
     </article>`;
+}
+
+function factionVaultHtml(faction) {
+  const members = ITEMS.filter((item) => item.faction === faction.id);
+  const shots = [
+    { src: faction.icon, caption: `${faction.name} icon` },
+    { src: faction.head, caption: `${faction.name} portrait` },
+    ...faction.roster.map((member) => ({ src: FACES[member.face], caption: member.name })),
+    ...members.slice(0, 4).map((item) => ({ src: faction.icon, caption: item.name })),
+  ];
+  const posts = [
+    ...FEED.filter((post) => post.faction === faction.id).map((post) => ({
+      name: post.name,
+      ago: post.ago,
+      text: post.text,
+    })),
+    { name: "vault_pin", ago: "pinned", text: `${faction.name} vault pin: the art on this wall is from the media kit.` },
+    { name: "war_note", ago: "sample", text: `${faction.name} war-room note: points still come from quests, sets, events, and game results.` },
+  ];
+  return `
+    <section class="panel" id="faction-vault">
+      <h2>Faction Vault</h2>
+      <p class="fine">Member art for ${esc(faction.name)}. Sample gallery. No live metadata.</p>
+      <div class="gallery">
+        ${shots.map((shot) => `
+          <figure>
+            <img src="${shot.src}" alt="${esc(shot.caption)}">
+            <figcaption>${esc(shot.caption)}</figcaption>
+          </figure>`).join("")}
+      </div>
+    </section>
+    <article class="panel">
+      <h2>Pinned lore</h2>
+      <p><span class="sample-pill">Pinned</span></p>
+      <p>${esc(faction.lore[0])}</p>
+      ${faction.lore.slice(1).map((line) => `<p>${esc(line)}</p>`).join("")}
+      <p>${esc(faction.onRecord)}</p>
+    </article>
+    <section class="panel">
+      <h2>War room</h2>
+      <p class="fine">Sample posts for this hall.</p>
+      ${posts.map((post) => `
+        <article class="vault-post">
+          <p class="fine">${esc(post.name)} · ${esc(post.ago)}</p>
+          <p>${esc(post.text)}</p>
+        </article>`).join("")}
+    </section>`;
+}
+
+function hallHtml(faction) {
+  return `
+    <p><a href="#halls">Back to Faction Wars</a></p>
+    <section class="hall-banner panel" style="--faction:${faction.color}">
+      <img class="hall-head" src="${faction.head}" alt="${esc(faction.name)} portrait">
+      <div>
+        <p class="kicker">${esc(faction.role)}</p>
+        <h2>${esc(faction.name)}</h2>
+        <p>${esc(faction.title)}</p>
+        <p>${esc(faction.onRecord)}</p>
+      </div>
+      <img class="hall-icon" src="${faction.icon}" alt="">
+    </section>
+    <div class="hall-tabs" role="tablist" aria-label="${esc(faction.name)} sections">
+      <button type="button" class="pixel-btn small" data-hall-tab="overview" aria-pressed="${hallTab === "overview"}">Hall</button>
+      <button type="button" class="pixel-btn ghost small" data-hall-tab="vault" aria-pressed="${hallTab === "vault"}">Faction Vault</button>
+    </div>
+    <div id="hall-body">${hallTab === "vault" ? factionVaultHtml(faction) : hallOverview(faction)}</div>`;
 }
 
 function relicHtml() {
@@ -391,6 +449,7 @@ function render(scroll) {
   const faction = factionById(hash);
   const mode = faction ? `hall:${faction.id}` : "wars";
   if (builtFor !== mode) {
+    hallTab = "overview";
     builtFor = mode;
     app.innerHTML = faction ? hallHtml(faction) : warsHtml();
     animateBars(app);
@@ -412,6 +471,20 @@ function setWeek(next) {
 }
 
 app.addEventListener("click", (event) => {
+  const tab = event.target.closest("[data-hall-tab]");
+  if (tab) {
+    const faction = factionById(location.hash.replace("#", ""));
+    if (!faction) return;
+    hallTab = tab.dataset.hallTab === "vault" ? "vault" : "overview";
+    document.querySelectorAll("[data-hall-tab]").forEach((button) => {
+      const on = button.dataset.hallTab === hallTab;
+      button.setAttribute("aria-pressed", on ? "true" : "false");
+      button.classList.toggle("ghost", !on);
+    });
+    document.getElementById("hall-body").innerHTML = hallTab === "vault" ? factionVaultHtml(faction) : hallOverview(faction);
+    if (hallTab === "overview") fillHall(faction);
+    return;
+  }
   const weekBtn = event.target.closest("[data-week]");
   if (weekBtn) {
     setWeek(Number(weekBtn.dataset.week));

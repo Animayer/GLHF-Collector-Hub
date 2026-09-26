@@ -3,6 +3,9 @@ import { factionById, MEDALS, RANK_MEDAL, standings } from "./data.js";
 import { esc, fmt } from "./util.js";
 import { onBurn } from "./pulse.js";
 import { ORIGINAL_SUPPLY } from "./data.js";
+import { mountHealth } from "./health.js";
+
+mountHealth(document.getElementById("health"));
 
 const rows = standings(6);
 const leader = factionById(rows[0].id);

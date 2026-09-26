@@ -11,11 +11,14 @@ A **community-run** home base for GLHFers and Gigaverse ROM holders, presented a
 
 - **Home** — GLHF hero, sample burn pulse (starts at the documented 420), this week's Faction Wars card, week-6 standings with medal ranks.
 - **Explorer** — 48 sample GLHFers (Ethereum) and ROMs (Abstract). Filters for collection, tier, faction, memory, stub level, and text. Item modal lists tier, faction, memory, serial, and stub level.
-- **My Vault** — demo wallet only (`0xDEMO…GLHF`). Holdings, tier and faction counts, set progress, and a holder card that downloads as PNG.
-- **Factions** — halls for Archon, Athena, Chobo, Crusader, Foxglove, Overseer, and Summoner, plus Gigus lore. Season board (weeks 1–6), quest bars, territory map, rotating week relic, rivalry with a local demo vote, council badges, recruitment board, war-room feed, and a season rewards track.
+- **My Vault** — demo wallet only (`0xDEMO…GLHF`). Holdings, tier and faction counts, set progress, a badge strip, a holder card PNG, and a vault collage PNG (2x2, 3x3, or 4x4, faction-colour background, handle watermark).
+- **Party** — pick 3 to 5 demo-vault GLHFers, see faction mix and synergy tags, name the party, and download a PNG share card.
+- **Factions** — halls for Archon, Athena, Chobo, Crusader, Foxglove, Overseer, and Summoner, plus Gigus lore. Each hall has a Faction Vault tab (member art, pinned lore, sample war-room posts). Season board (weeks 1–6), quest bars, territory map, rotating week relic, rivalry with a local demo vote, council badges, recruitment board, war-room feed, and a season rewards track.
 - **Events** — Set Hunt, Special Character spotlight vote, holder card contest, and a countdown to the end of The Awakening (Oct 12). Gigaverse Online launch date is TBA.
-- **Wiki** — the seven Masters, the Auctioneer, and a Gigus lore card. Invented lines are marked sample lore.
-- **Burn** — inline chart of sample cumulative burns ending at 420, supply math (3,690 minus burned), recent sample rows, and the Auctioneer.
+- **Wiki** — the seven Masters, the Auctioneer, and a Gigus lore card, plus Community Deep Dives (sample posts and a demo write form that does not save).
+- **Guide** — GLHFers 101. Supply and burn figures are marked sample/unverified. Includes a placeholder badge: Seeking official co-sign from Gigaverse.
+- **Badges** — twelve sample achievements with bronze, silver, and gold tiers, earned and locked states, and progress bars. Faction Wars points can unlock badges. Onchain badges possible later.
+- **Burn** — inline chart of sample cumulative burns ending at 420, supply math (3,690 minus burned), recent sample rows, the Auctioneer, and a collection-health panel (holder conviction, not price). Home shows the same health panel.
 
 Faction points come from activity (quests, sets, events, and game results), not wallet size.
 

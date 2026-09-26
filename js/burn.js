@@ -2,6 +2,9 @@ import "./shell.js";
 import { BASE_BURN, BURN_SERIES, ORIGINAL_SUPPLY, RECENT_BURNS } from "./data.js";
 import { esc, fmt } from "./util.js";
 import { onBurn } from "./pulse.js";
+import { mountHealth } from "./health.js";
+
+mountHealth(document.getElementById("health"));
 
 const baseline = document.getElementById("burn-baseline");
 const pulse = document.getElementById("burn-pulse");

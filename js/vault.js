@@ -10,6 +10,7 @@ import {
   TIER_COLOR,
   VAULT_IDS,
 } from "./data.js";
+import { badgeStripMarkup } from "./badge-data.js";
 import { esc, fmt, pixelSafe } from "./util.js";
 
 const holdings = itemsByIds(VAULT_IDS);
@@ -82,6 +83,62 @@ function drawImageContain(img, x, y, size) {
   const w = img.width * scale;
   const h = img.height * scale;
   ctx.drawImage(img, x + (size - w) / 2, y + (size - h) / 2, w, h);
+}
+
+function drawContain(context, img, x, y, size) {
+  if (!img) return;
+  const scale = Math.min(size / img.width, size / img.height);
+  const w = img.width * scale;
+  const h = img.height * scale;
+  context.drawImage(img, x + (size - w) / 2, y + (size - h) / 2, w, h);
+}
+
+const collageCanvas = document.getElementById("collage-canvas");
+const collageCtx = collageCanvas.getContext("2d");
+const collageStatus = document.getElementById("collage-status");
+
+async function drawCollage() {
+  const factionSelect = document.getElementById("collage-faction");
+  if (!factionSelect.value) return;
+  const n = Number(document.getElementById("collage-grid").value) || 3;
+  const faction = factionById(factionSelect.value) || factionById("archon");
+  const handle = pixelSafe(document.getElementById("handle").value, 16);
+  const size = n === 2 ? 640 : n === 4 ? 800 : 720;
+  collageCanvas.width = size;
+  collageCanvas.height = size;
+  const icons = await Promise.all(Array.from({ length: n * n }, (_, index) => {
+    const item = holdings[index % holdings.length];
+    return loadImage(factionById(item.faction).icon);
+  }));
+  try {
+    await document.fonts.load("20px Gigaverse");
+    await document.fonts.load("16px Gigaverse");
+  } catch {
+    /* canvas falls back to a monospace face */
+  }
+  collageCtx.imageSmoothingEnabled = false;
+  collageCtx.fillStyle = faction.color;
+  collageCtx.fillRect(0, 0, size, size);
+  const pad = 18;
+  const gap = 10;
+  const cell = (size - pad * 2 - gap * (n - 1)) / n;
+  icons.forEach((icon, index) => {
+    const col = index % n;
+    const row = Math.floor(index / n);
+    const x = pad + col * (cell + gap);
+    const y = pad + row * (cell + gap);
+    collageCtx.fillStyle = "#140c24";
+    collageCtx.fillRect(x, y, cell, cell);
+    drawContain(collageCtx, icon, x + 8, y + 8, cell - 16);
+  });
+  collageCtx.fillStyle = "rgba(7, 4, 14, 0.78)";
+  collageCtx.fillRect(0, size - 56, size, 56);
+  collageCtx.fillStyle = "#f6f1e6";
+  collageCtx.font = "20px Gigaverse";
+  collageCtx.fillText(handle, 16, size - 22);
+  collageCtx.fillStyle = "#ff4fd8";
+  collageCtx.font = "16px Gigaverse";
+  collageCtx.fillText("SAMPLE", size - 130, size - 22);
 }
 
 async function drawCard() {
@@ -180,6 +237,8 @@ function renderVault() {
     </div>`;
   }).join("");
 
+  document.getElementById("badge-strip").innerHTML = badgeStripMarkup();
+
   document.getElementById("holding-grid").innerHTML = holdings.map((item) => {
     const faction = factionById(item.faction);
     return `<article class="item-card" style="--faction:${faction.color};--tier:${TIER_COLOR[item.tier]}">
@@ -202,6 +261,8 @@ function fillSelects() {
     `<option value="${faction.id}">${esc(faction.name)}</option>`).join("");
   document.getElementById("card-medal").innerHTML = Object.keys(MEDALS).map((id) =>
     `<option value="${id}">${id}</option>`).join("");
+  document.getElementById("collage-faction").innerHTML = FACTIONS.map((faction) =>
+    `<option value="${faction.id}">${esc(faction.name)}</option>`).join("");
 }
 
 document.getElementById("connect").addEventListener("click", async () => {
@@ -211,9 +272,11 @@ document.getElementById("connect").addEventListener("click", async () => {
   fillSelects();
   document.getElementById("card-faction").value = factionId;
   document.getElementById("card-medal").value = medalId;
+  document.getElementById("collage-faction").value = factionId;
   renderPicker();
   renderVault();
   await drawCard();
+  await drawCollage();
   if (location.hash === "#card") document.getElementById("card").scrollIntoView();
 });
 
@@ -230,7 +293,12 @@ document.getElementById("avatar-picker").addEventListener("click", (event) => {
   drawCard();
 });
 
-document.getElementById("handle").addEventListener("input", () => drawCard());
+document.getElementById("handle").addEventListener("input", () => {
+  drawCard();
+  drawCollage();
+});
+document.getElementById("collage-grid").addEventListener("change", () => drawCollage());
+document.getElementById("collage-faction").addEventListener("change", () => drawCollage());
 document.getElementById("card-faction").addEventListener("change", (event) => {
   factionId = event.target.value;
   drawCard();
@@ -238,6 +306,27 @@ document.getElementById("card-faction").addEventListener("change", (event) => {
 document.getElementById("card-medal").addEventListener("change", (event) => {
   medalId = event.target.value;
   drawCard();
+});
+
+document.getElementById("download-collage").addEventListener("click", async () => {
+  await drawCollage();
+  collageCanvas.toBlob((blob) => {
+    if (!blob || blob.size < 32) {
+      collageStatus.textContent = "Could not build the PNG.";
+      return;
+    }
+    const handle = pixelSafe(document.getElementById("handle").value, 16).replace(/\s+/g, "-");
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `glhf-collage-${handle}.png`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    collageStatus.textContent = "Collage PNG saved to your downloads.";
+    playSuccess();
+  }, "image/png");
 });
 
 document.getElementById("download-card").addEventListener("click", () => {
